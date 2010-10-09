@@ -24,7 +24,7 @@ module Warden
       #
       def valid?
         (params.include?('warden_oauth_provider') &&  params['warden_oauth_provider'] == config.provider_name.to_s) ||
-          params.include?('oauth_token') 
+          params.include?('oauth_token')
       end
 
 
@@ -68,7 +68,7 @@ module Warden
         self.errors.add(service_param_name.to_sym, msg)
         super
       end
-      
+
       ###################
       ### OAuth Logic ###
       ###################
@@ -78,8 +78,9 @@ module Warden
       end
 
       def request_token
-        host_with_port = Warden::OAuth::Utils.host_with_port(request)
-        @request_token ||= consumer.get_request_token(:oauth_callback => host_with_port)
+        # TODO: maybe also allow a config setting for oauth_callback_url?
+        oauth_callback_url = params['oauth_callback_url'] || Warden::OAuth::Utils.host_with_port(request)
+        @request_token ||= consumer.get_request_token(:oauth_callback => oauth_callback_url)
       end
 
       def access_token
@@ -123,7 +124,7 @@ ERROR_MESSAGE
         @request_token = ::OAuth::RequestToken.new(consumer, token, secret)
       end
 
-      def missing_stored_token? 
+      def missing_stored_token?
         !request_token
       end
 
