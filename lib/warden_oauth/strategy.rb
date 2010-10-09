@@ -114,13 +114,13 @@ ERROR_MESSAGE
       end
 
       def store_request_token_on_session
-        session[:request_token]  = request_token.token
-        session[:request_secret] = request_token.secret
+        session[request_token_session_key]  = request_token.token
+        session[request_secret_session_key] = request_token.secret
       end
 
       def load_request_token_from_session
-        token  = session.delete(:request_token)
-        secret = session.delete(:request_secret)
+        token  = session.delete(request_token_session_key)
+        secret = session.delete(request_secret_session_key)
         @request_token = ::OAuth::RequestToken.new(consumer, token, secret)
       end
 
@@ -140,7 +140,13 @@ ERROR_MESSAGE
         self.class::CONFIG
       end
 
-    end
+      def request_token_session_key
+        :"#{config.provider_name}_request_token"
+      end
 
+      def request_secret_session_key
+        :"#{config.provider_name}_request_secret"
+      end
+    end
   end
 end
