@@ -119,8 +119,8 @@ ERROR_MESSAGE
       end
 
       def load_request_token_from_session
-        token  = session.delete(request_token_session_key)
-        secret = session.delete(request_secret_session_key)
+        token  = session[request_token_session_key]
+        secret = session[request_secret_session_key]
         @request_token = ::OAuth::RequestToken.new(consumer, token, secret)
       end
 
